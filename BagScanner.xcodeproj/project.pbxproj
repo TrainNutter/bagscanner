@@ -16,6 +16,9 @@
 		16DE2BC025758F320053A366 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16DE2BBF25758F320053A366 /* Assets.xcassets */; };
 		16DE2BCB25758F330053A366 /* BagScannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DE2BCA25758F330053A366 /* BagScannerTests.swift */; };
 		16DE2BD625758F330053A366 /* BagScannerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DE2BD525758F330053A366 /* BagScannerUITests.swift */; };
+		16DE2BE7257593840053A366 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 16DE2BE6257593840053A366 /* play.png */; };
+		16DE2BEC2575969F0053A366 /* MenuScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 16DE2BEB2575969F0053A366 /* MenuScene.sks */; };
+		16DE2BF12575971F0053A366 /* MenuScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DE2BF02575971F0053A366 /* MenuScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +54,9 @@
 		16DE2BD125758F330053A366 /* BagScannerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BagScannerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		16DE2BD525758F330053A366 /* BagScannerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagScannerUITests.swift; sourceTree = "<group>"; };
 		16DE2BD725758F330053A366 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		16DE2BE6257593840053A366 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
+		16DE2BEB2575969F0053A366 /* MenuScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MenuScene.sks; sourceTree = "<group>"; };
+		16DE2BF02575971F0053A366 /* MenuScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,8 +111,11 @@
 				16DE2BB425758F300053A366 /* GameScene.sks */,
 				16DE2BB625758F300053A366 /* Actions.sks */,
 				16DE2BB825758F300053A366 /* GameScene.swift */,
+				16DE2BEB2575969F0053A366 /* MenuScene.sks */,
+				16DE2BF02575971F0053A366 /* MenuScene.swift */,
 				16DE2BBA25758F300053A366 /* GameViewController.swift */,
 				16DE2BBC25758F300053A366 /* Main.storyboard */,
+				16DE2BE6257593840053A366 /* play.png */,
 				16DE2BBF25758F320053A366 /* Assets.xcassets */,
 				16DE2BC125758F320053A366 /* Info.plist */,
 			);
@@ -235,6 +244,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				16DE2BBE25758F300053A366 /* Main.storyboard in Resources */,
+				16DE2BEC2575969F0053A366 /* MenuScene.sks in Resources */,
+				16DE2BE7257593840053A366 /* play.png in Resources */,
 				16DE2BB525758F300053A366 /* GameScene.sks in Resources */,
 				16DE2BC025758F320053A366 /* Assets.xcassets in Resources */,
 				16DE2BB725758F300053A366 /* Actions.sks in Resources */,
@@ -263,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				16DE2BB925758F300053A366 /* GameScene.swift in Sources */,
+				16DE2BF12575971F0053A366 /* MenuScene.swift in Sources */,
 				16DE2BBB25758F300053A366 /* GameViewController.swift in Sources */,
 				16DE2BB325758F300053A366 /* AppDelegate.swift in Sources */,
 			);
