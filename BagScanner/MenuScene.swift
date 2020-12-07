@@ -28,7 +28,8 @@ class MenuScene: SKScene {
                 sceneNode.scaleMode = .aspectFill
                 
                 // Present the scene
-                if let view = self.view as! SKView? {
+                //as! SKView also works
+                if let view = self.view {
                     view.presentScene(sceneNode)
                     
                     view.ignoresSiblingOrder = true
@@ -45,8 +46,12 @@ class MenuScene: SKScene {
         for touch in touches {
              let location = touch.location(in: self)
              let touchedNode = atPoint(location)
-             if touchedNode.name == "play_button" {
+             if touchedNode.name == "play_Button" {
                 presentGameScene()
+                }
+             if touchedNode.name == "exit_Button"{
+                exit(1)
+                //Can only be used on MacOS version - Will be rejected on App store for tvOS, WatchOS & iOS app stores
              }
         }
         

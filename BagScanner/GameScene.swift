@@ -72,6 +72,14 @@ class GameScene: SKScene {
             label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
         }
         
+        for touch in touches {
+             let location = touch.location(in: self)
+             let touchedNode = atPoint(location)
+             if touchedNode.name == "pause_Button" {
+                presentPauseScene()
+            }
+        }
+        
         for t in touches { self.touchDown(atPoint: t.location(in: self)) }
     }
     
@@ -86,6 +94,34 @@ class GameScene: SKScene {
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches { self.touchUp(atPoint: t.location(in: self)) }
     }
+    
+    func presentPauseScene() {
+        if let scene = GKScene(fileNamed: "PauseScene") {
+            
+            // Get the SKScene from the loaded GKScene
+            if let sceneNode = scene.rootNode as! PauseScene? {
+                
+                // Copy gameplay related content over to the scene
+                //sceneNode.entities = scene.entities
+                //sceneNode.graphs = scene.graphs
+                
+                // Set the scale mode to scale to fit the window
+                sceneNode.scaleMode = .aspectFill
+                
+                // Present the scene
+                //as! SKView also works
+                if let view = self.view {
+                    view.presentScene(sceneNode)
+                    
+                    view.ignoresSiblingOrder = true
+                    
+                    view.showsFPS = true
+                    view.showsNodeCount = true
+                }
+            }
+        }
+    }
+    
     
     
     override func update(_ currentTime: TimeInterval) {
