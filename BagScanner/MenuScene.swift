@@ -7,30 +7,34 @@
 
 import SpriteKit
 import GameplayKit
+import UIKit
 
 class MenuScene: SKScene {
 
+    var viewController: UIViewController?
+    
     override func sceneDidLoad() {
 
     }
     
     func presentGameScene() {
-        if let scene = GKScene(fileNamed: "GameScene") {
+        if let scene = GKScene(fileNamed: "GameScene")  {
             
             // Get the SKScene from the loaded GKScene
-            if let sceneNode = scene.rootNode as! GameScene? {
-                
+            if let gameScene = scene.rootNode as! GameScene? {
+                gameScene.viewController = viewController
+
                 // Copy gameplay related content over to the scene
-                sceneNode.entities = scene.entities
-                sceneNode.graphs = scene.graphs
+                gameScene.entities = scene.entities
+                gameScene.graphs = scene.graphs
                 
                 // Set the scale mode to scale to fit the window
-                sceneNode.scaleMode = .aspectFill
+                gameScene.scaleMode = .aspectFill
                 
                 // Present the scene
                 //as! SKView also works
                 if let view = self.view {
-                    view.presentScene(sceneNode)
+                    view.presentScene(gameScene)
                     
                     view.ignoresSiblingOrder = true
                     

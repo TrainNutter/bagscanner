@@ -20,7 +20,8 @@ class GameViewController: UIViewController {
             
             // Get the SKScene from the loaded GKScene
             if let sceneNode = scene.rootNode as! MenuScene? {
-                                
+                sceneNode.viewController = self;
+
                 // Set the scale mode to scale to fit the window
                 sceneNode.scaleMode = .aspectFill
                 

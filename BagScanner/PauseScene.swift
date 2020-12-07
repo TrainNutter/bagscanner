@@ -9,16 +9,19 @@ import GameplayKit
 
 class PauseScene: SKScene {
 
+    var viewController: UIViewController?
+
     override func sceneDidLoad() {
 
     }
     
     func exitWithoutSave() {
         let alert = UIAlertController(title: "Exit to Main Menu", message: "Are you sure you want to exit without saving?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+            self.presentMainMenuScene()
+        }))
         alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
-        
-        //self.present(alert, animated: true)
+        viewController?.present(alert, animated: true)
     }
     
     func presentGameScene() {
@@ -27,7 +30,8 @@ class PauseScene: SKScene {
             
             // Get the SKScene from the loaded GKScene
             if let sceneNode = scene.rootNode as! GameScene? {
-                
+                sceneNode.viewController = viewController
+
                 // Copy gameplay related content over to the scene
                 sceneNode.entities = scene.entities
                 sceneNode.graphs = scene.graphs
@@ -52,7 +56,8 @@ class PauseScene: SKScene {
     func presentMainMenuScene() {
         if let scene = GKScene(fileNamed: "MenuScene") {
             if let sceneNode = scene.rootNode as! MenuScene? {
-                
+                sceneNode.viewController = viewController
+
                 // Set the scale mode to scale to fit the window
                 sceneNode.scaleMode = .aspectFill
                 
@@ -84,7 +89,8 @@ class PauseScene: SKScene {
                 presentGameScene()
              }
              if touchedNode.name == "exitMenu_Button"{
-                presentMainMenuScene()
+                exitWithoutSave()
+//                presentMainMenuScene()
                 
                 //Can only be used on MacOS version - Will be rejected on App store for tvOS, WatchOS & iOS app stores
             }
