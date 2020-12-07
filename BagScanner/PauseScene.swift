@@ -51,11 +51,7 @@ class PauseScene: SKScene {
     
     func presentMainMenuScene() {
         if let scene = GKScene(fileNamed: "MenuScene") {
-            if let sceneNode = scene.rootNode as! GameScene? {
-                
-                // Copy gameplay related content over to the scene
-                sceneNode.entities = scene.entities
-                sceneNode.graphs = scene.graphs
+            if let sceneNode = scene.rootNode as! MenuScene? {
                 
                 // Set the scale mode to scale to fit the window
                 sceneNode.scaleMode = .aspectFill
@@ -86,12 +82,12 @@ class PauseScene: SKScene {
              let touchedNode = atPoint(location)
              if touchedNode.name == "continue_Button" {
                 presentGameScene()
-                }
-             if touchedNode.name == "exitMain_Button"{
+             }
+             if touchedNode.name == "exitMenu_Button"{
                 presentMainMenuScene()
                 
                 //Can only be used on MacOS version - Will be rejected on App store for tvOS, WatchOS & iOS app stores
-             }
+            }
             if touchedNode.name == "saveExit_Button"{
                 
             }
