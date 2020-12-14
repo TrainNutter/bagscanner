@@ -17,7 +17,7 @@ class PauseScene: SKScene {
     
     func exitWithoutSave() {
         let alert = UIAlertController(title: "Exit to Main Menu", message: "Are you sure you want to exit without saving?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+        alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { _ in
             self.presentMainMenuScene()
         }))
         alert.addAction(UIAlertAction(title: "No", style: .cancel, handler: nil))
