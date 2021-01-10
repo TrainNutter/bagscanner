@@ -18,12 +18,11 @@ class GameScene: SKScene {
     private var lastUpdateTime : TimeInterval = 0
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
-    private var bagNode : SKTexture?
+    private var bagNode : SKSpriteNode?
     
     override func sceneDidLoad() {
 
         self.lastUpdateTime = 0
-        self.createBag()
         
         // Get label node from scene and store it for use later
         self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
@@ -44,6 +43,11 @@ class GameScene: SKScene {
                                               SKAction.fadeOut(withDuration: 0.5),
                                               SKAction.removeFromParent()]))
         }
+        
+        // setup bag
+        self.bagNode = self.childNode(withName: "bagNode") as? SKSpriteNode
+        self.createBag()
+
     }
     
     
@@ -127,28 +131,16 @@ class GameScene: SKScene {
     }
     
     func createBag() {
-//        let randomBagSelect = Int.random(in: 0..<4)
-//        
-//        bagNode = SKSpriteNode
-//        
-//        if var bagNode = self.bagNode {
-//        
-//            if randomBagSelect == 0 {
-//                bagNode.texture = (SKTexture(imageNamed: "Suitcase 1"))
-//            }
-//            
-//            if randomBagSelect == 1 {
-//                bagNode.texture = (SKTexture(imageNamed: "Suitcase 2"))
-//            }
-//            
-//            if randomBagSelect == 2 {
-//                bagNode.texture = (SKTexture(imageNamed: "Suitcase 3"))
-//            }
-//            
-//            if randomBagSelect == 3 {
-//                bagNode.texture = (SKTexture(imageNamed: "Suitcase 4"))
-//            }
-
+        let textureNames = ["Suitcase 1", "Suitcase 2", "Suitcase 3", "Suitcase 4"]
+        let randomName = textureNames.randomElement()!
+        let texture = SKTexture(imageNamed: randomName)
+        
+        // immediatly set the texture, keeps the same size as the node in the scene file
+        bagNode?.texture = texture
+        
+        // using an action will "transition" to the new texture including resizing to match the asset size
+//        let action = SKAction.setTexture(texture, resize: true)
+//        bagNode?.run(action)
     }
     
     override func update(_ currentTime: TimeInterval) {
