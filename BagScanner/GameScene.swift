@@ -18,6 +18,7 @@ class GameScene: SKScene {
     private var lastUpdateTime : TimeInterval = 0
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
+    private var bagNode : SKTexture?
     
     override func sceneDidLoad() {
 
@@ -79,7 +80,10 @@ class GameScene: SKScene {
              let touchedNode = atPoint(location)
              if touchedNode.name == "pause_Button" {
                 presentPauseScene()
-            }
+             }
+             if touchedNode.name == "TV" {
+                    
+             }
         }
         
         for t in touches { self.touchDown(atPoint: t.location(in: self)) }
@@ -121,11 +125,31 @@ class GameScene: SKScene {
         }
     }
     
-    
+    func createBag() {
+        let randomBagSelect = Int.random(in: 0..<4)
+        
+        if var bagNode = self.bagNode {
+        
+            if randomBagSelect == 0 {
+                bagNode = (SKTexture(imageNamed: "Suitcase 1"))
+            }
+            
+            if randomBagSelect == 1 {
+                bagNode = (SKTexture(imageNamed: "Suitcase 2"))
+            }
+            
+            if randomBagSelect == 2 {
+                bagNode = (SKTexture(imageNamed: "Suitcase 3"))
+            }
+            
+            if randomBagSelect == 3 {
+                bagNode = (SKTexture(imageNamed: "Suitcase 4"))
+            }
+        }
+    }
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        
         // Initialize _lastUpdateTime if it has not already been
         if (self.lastUpdateTime == 0) {
             self.lastUpdateTime = currentTime
