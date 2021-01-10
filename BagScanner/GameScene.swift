@@ -46,8 +46,7 @@ class GameScene: SKScene {
         
         // setup bag
         self.bagNode = self.childNode(withName: "bagNode") as? SKSpriteNode
-        self.createBag()
-
+        self.createBagOld()
     }
     
     
@@ -131,16 +130,35 @@ class GameScene: SKScene {
     }
     
     func createBag() {
-        let textureNames = ["Suitcase 1", "Suitcase 2", "Suitcase 3", "Suitcase 4"]
-        let randomName = textureNames.randomElement()!
-        let texture = SKTexture(imageNamed: randomName)
-        
-        // immediatly set the texture, keeps the same size as the node in the scene file
-        bagNode?.texture = texture
-        
-        // using an action will "transition" to the new texture including resizing to match the asset size
-//        let action = SKAction.setTexture(texture, resize: true)
-//        bagNode?.run(action)
+        if let bag = self.bagNode {
+            let textureNames = ["Suitcase 1", "Suitcase 2", "Suitcase 3", "Suitcase 4"]
+            let randomName = textureNames.randomElement()!
+
+            bag.texture = SKTexture(imageNamed: randomName)
+//            self.bagNode?.texture = texture
+        }
+    }
+    
+    func createBagOld() {
+        if let bag = self.bagNode {
+            let randomBagSelect = Int.random(in: 0..<4)
+
+            if randomBagSelect == 0 {
+                bag.texture = SKTexture(imageNamed: "Suitcase 1")
+            }
+
+            if randomBagSelect == 1 {
+                bag.texture = SKTexture(imageNamed: "Suitcase 2")
+            }
+
+            if randomBagSelect == 2 {
+                bag.texture = SKTexture(imageNamed: "Suitcase 3")
+            }
+
+            if randomBagSelect == 3 {
+                bag.texture = SKTexture(imageNamed: "Suitcase 4")
+            }
+        }
     }
     
     override func update(_ currentTime: TimeInterval) {
