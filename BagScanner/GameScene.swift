@@ -23,6 +23,7 @@ class GameScene: SKScene {
     override func sceneDidLoad() {
 
         self.lastUpdateTime = 0
+        self.createBag()
         
         // Get label node from scene and store it for use later
         self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
@@ -126,26 +127,28 @@ class GameScene: SKScene {
     }
     
     func createBag() {
-        let randomBagSelect = Int.random(in: 0..<4)
-        
-        if var bagNode = self.bagNode {
-        
-            if randomBagSelect == 0 {
-                bagNode = (SKTexture(imageNamed: "Suitcase 1"))
-            }
-            
-            if randomBagSelect == 1 {
-                bagNode = (SKTexture(imageNamed: "Suitcase 2"))
-            }
-            
-            if randomBagSelect == 2 {
-                bagNode = (SKTexture(imageNamed: "Suitcase 3"))
-            }
-            
-            if randomBagSelect == 3 {
-                bagNode = (SKTexture(imageNamed: "Suitcase 4"))
-            }
-        }
+//        let randomBagSelect = Int.random(in: 0..<4)
+//        
+//        bagNode = SKSpriteNode
+//        
+//        if var bagNode = self.bagNode {
+//        
+//            if randomBagSelect == 0 {
+//                bagNode.texture = (SKTexture(imageNamed: "Suitcase 1"))
+//            }
+//            
+//            if randomBagSelect == 1 {
+//                bagNode.texture = (SKTexture(imageNamed: "Suitcase 2"))
+//            }
+//            
+//            if randomBagSelect == 2 {
+//                bagNode.texture = (SKTexture(imageNamed: "Suitcase 3"))
+//            }
+//            
+//            if randomBagSelect == 3 {
+//                bagNode.texture = (SKTexture(imageNamed: "Suitcase 4"))
+//            }
+
     }
     
     override func update(_ currentTime: TimeInterval) {
