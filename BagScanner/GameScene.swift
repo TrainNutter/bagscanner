@@ -14,11 +14,18 @@ class GameScene: SKScene {
     var viewController: UIViewController?
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
+    var levelDay = 1
     
     private var lastUpdateTime : TimeInterval = 0
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
     private var bagNode : SKSpriteNode?
+    private var contrabandNode : SKSpriteNode?
+    private var clutterNode : SKSpriteNode?
+    private var contrabandNodes = [SKSpriteNode]()
+    private var clutterNodes = [SKSpriteNode]()
+    private var randomLoop = Int.random(in: 1..<10)
+    //private var contrabandNum = Int
     
     override func sceneDidLoad() {
 
@@ -44,9 +51,22 @@ class GameScene: SKScene {
                                               SKAction.removeFromParent()]))
         }
         
-        // setup bag
+        // get bag and child nodes from scene
         self.bagNode = self.childNode(withName: "bagNode") as? SKSpriteNode
-        self.createBagOld()
+        for child in self.bagNode!.children {
+            if let childNode = child as? SKSpriteNode {
+                if (childNode.name!.hasPrefix("clutter")) {
+                    clutterNodes.append(childNode)
+                } else {
+                    contrabandNodes.append(childNode)
+                }
+            }
+        }
+        
+        // setup bag and contents
+        self.createBag()
+        self.showContraband()
+        self.showClutter()
     }
     
     
@@ -131,7 +151,7 @@ class GameScene: SKScene {
     
     func createBag() {
         if let bag = self.bagNode {
-            let textureNames = ["Suitcase 1", "Suitcase 2", "Suitcase 3", "Suitcase 4"]
+            let textureNames = ["bag1", "bag2", "bag3", "bag4"]
             let randomName = textureNames.randomElement()!
 
             bag.texture = SKTexture(imageNamed: randomName)
@@ -139,24 +159,50 @@ class GameScene: SKScene {
         }
     }
     
+    func showClutter() {
+        for node in self.clutterNodes {
+            node.isHidden = false
+        }
+        self.clutterNodes.randomElement()?.isHidden = true
+        
+//        if levelDay != 1 {
+//            for _ in 0...Int.random(in: 1..<4){
+//                if let clutter = self.clutterNode {
+//                    let textureNames = ["clutter1", "clutter2", "clutter3", "clutter4"]
+//                    let randomName = textureNames.randomElement()!
+//
+//                    clutter.texture = SKTexture(imageNamed: randomName)
+//                }
+//            }
+//        }
+    }
+    
+    func showContraband() {
+        for node in self.contrabandNodes {
+            node.isHidden = true
+        }
+        self.contrabandNodes.randomElement()?.isHidden = false
+    }
+    
+    
     func createBagOld() {
         if let bag = self.bagNode {
             let randomBagSelect = Int.random(in: 0..<4)
 
             if randomBagSelect == 0 {
-                bag.texture = SKTexture(imageNamed: "Suitcase 1")
+                bag.texture = SKTexture(imageNamed: "bag1")
             }
 
             if randomBagSelect == 1 {
-                bag.texture = SKTexture(imageNamed: "Suitcase 2")
+                bag.texture = SKTexture(imageNamed: "bag2")
             }
 
             if randomBagSelect == 2 {
-                bag.texture = SKTexture(imageNamed: "Suitcase 3")
+                bag.texture = SKTexture(imageNamed: "bag3")
             }
 
             if randomBagSelect == 3 {
-                bag.texture = SKTexture(imageNamed: "Suitcase 4")
+                bag.texture = SKTexture(imageNamed: "bag4")
             }
         }
     }
