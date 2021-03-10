@@ -14,10 +14,13 @@ class GameScene: SKScene {
     var viewController: UIViewController?
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
-    var levelDay = 1
+    var currentScore = 0
+    var gameTimerCount:Int = 300
+    var gameTimerLabel = String()
+    var timer : Timer!
+    var timeString = ""
     
     private var lastUpdateTime : TimeInterval = 0
-    private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
     private var bagNode : SKSpriteNode?
     private var contrabandNode : SKSpriteNode?
@@ -25,31 +28,38 @@ class GameScene: SKScene {
     private var contrabandNodes = [SKSpriteNode]()
     private var clutterNodes = [SKSpriteNode]()
     private var randomLoop = Int.random(in: 1..<10)
-    //private var contrabandNum = Int
+    private var yesButtonPressed = false
+    private var noButtonPressed = false
+    private var contrabandChance = 2
+    private var contrabandPresent = false
+    private var scoreLabel : SKLabelNode?
+    
+    let score = "Score"
+    let bestScore = "BestScore"
     
     override func sceneDidLoad() {
 
         self.lastUpdateTime = 0
         
         // Get label node from scene and store it for use later
-        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-        if let label = self.label {
-            label.alpha = 0.0
-            label.run(SKAction.fadeIn(withDuration: 2.0))
+        self.scoreLabel = self.childNode(withName: "//scoreLabel") as? SKLabelNode
+        if let scoreLabel = self.scoreLabel {
+            scoreLabel.alpha = 0.0
+            //label.run(SKAction.fadeIn(withDuration: 2.0))
         }
         
         // Create shape node to use during mouse interaction
-        let w = (self.size.width + self.size.height) * 0.05
-        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-        
-        if let spinnyNode = self.spinnyNode {
-            spinnyNode.lineWidth = 2.5
-            
-            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-                                              SKAction.fadeOut(withDuration: 0.5),
-                                              SKAction.removeFromParent()]))
-        }
+//        let w = (self.size.width + self.size.height) * 0.05
+//        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
+//
+//        if let spinnyNode = self.spinnyNode {
+//            spinnyNode.lineWidth = 2.5
+//
+//            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
+//            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
+//                                              SKAction.fadeOut(withDuration: 0.5),
+//                                              SKAction.removeFromParent()]))
+//        }
         
         // get bag and child nodes from scene
         self.bagNode = self.childNode(withName: "bagNode") as? SKSpriteNode
@@ -63,41 +73,47 @@ class GameScene: SKScene {
             }
         }
         
+        /* Reset Score label */
+        scoreLabel?.text = "\(currentScore)"
+        
         // setup bag and contents
         self.createBag()
         self.showContraband()
         self.showClutter()
+        
+        //timer
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(gameTimerCounter), userInfo: nil, repeats: false)
+        
     }
-    
-    
+
     func touchDown(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.green
-            self.addChild(n)
-        }
+//        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
+//            n.position = pos
+//            n.strokeColor = SKColor.green
+//            self.addChild(n)
+//        }
     }
     
     func touchMoved(toPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.blue
-            self.addChild(n)
-        }
+//        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
+//            n.position = pos
+//            n.strokeColor = SKColor.blue
+//            self.addChild(n)
+//        }
     }
     
     func touchUp(atPoint pos : CGPoint) {
-        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-            n.position = pos
-            n.strokeColor = SKColor.red
-            self.addChild(n)
-        }
+//        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
+//            n.position = pos
+//            n.strokeColor = SKColor.red
+//            self.addChild(n)
+//        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-        }
+//        if let label = self.label {
+//            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
+//        }
         
         for touch in touches {
              let location = touch.location(in: self)
@@ -105,9 +121,14 @@ class GameScene: SKScene {
              if touchedNode.name == "pause_Button" {
                 presentPauseScene()
              }
-             if touchedNode.name == "TV" {
-                    
+             if touchedNode.name == "yesButton" {
+                    bagVerify()
+                    yesButtonPressed = true
              }
+             if touchedNode.name == "noButton" {
+                    bagVerify()
+                    noButtonPressed = true
+            }
         }
         
         for t in touches { self.touchDown(atPoint: t.location(in: self)) }
@@ -149,6 +170,24 @@ class GameScene: SKScene {
         }
     }
     
+    @objc func gameTimerCounter() -> Void {
+        gameTimerCount = gameTimerCount - 1
+        let time = secondsToMinutesSeconds(seconds: gameTimerCount)
+        let timeString = makeTimeString(minutes: time.0, seconds: time.1)
+        TimerLabel.text = timeString
+    }
+    
+    func secondsToMinutesSeconds(seconds: Int) -> (Int, Int){
+        return ((seconds % 3600) / 60);,((seconds % 3600) % 60))
+    }
+    
+    func makeTimeString(minutes: Int, seconds: Int) -> String{
+        timeString += String(format: "0%2d&", minutes)
+        timeString += ":"
+        timeString += String(format: "0%2d", seconds)
+        return timeString
+    }
+    
     func createBag() {
         if let bag = self.bagNode {
             let textureNames = ["bag1", "bag2", "bag3", "bag4"]
@@ -178,9 +217,13 @@ class GameScene: SKScene {
     }
     
     func showContraband() {
-        for node in self.contrabandNodes {
-            node.isHidden = true
-        }
+        contrabandChance = Int.random(in:1..<3)
+        if contrabandChance == 1 {
+            for node in self.contrabandNodes {
+                node.isHidden = true
+                contrabandPresent = true
+                }
+            }
         self.contrabandNodes.randomElement()?.isHidden = false
     }
     
@@ -207,6 +250,47 @@ class GameScene: SKScene {
         }
     }
     
+    func bagVerify() {
+        if yesButtonPressed == true {
+            if contrabandPresent == true {
+                currentScore+=1
+                scoreLabel?.text = String(currentScore)
+            }
+            yesButtonPressed = false
+            contrabandPresent = false
+        }
+        if noButtonPressed == true {
+            if contrabandPresent == false {
+                currentScore+=1
+                scoreLabel?.text = String(currentScore)
+            }
+           noButtonPressed = false
+        }
+    }
+    
+    func setScore(_ value: Int) {
+        
+        if value > getBestScore() {
+            setBestScore(value)
+        }
+        
+        UserDefaults.standard.set(value, forKey: score)
+        UserDefaults.standard.synchronize()
+    }
+    
+    func getScore() -> Int {
+        return UserDefaults.standard.integer(forKey: score)
+    }
+    
+    func setBestScore(_ value: Int) {
+        UserDefaults.standard.set(value, forKey: bestScore)
+        UserDefaults.standard.synchronize()
+    }
+    
+    func getBestScore() -> Int {
+        return UserDefaults.standard.integer(forKey: bestScore)
+    }
+
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         // Initialize _lastUpdateTime if it has not already been
