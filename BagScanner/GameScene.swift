@@ -15,10 +15,12 @@ class GameScene: SKScene {
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     var currentScore = 0
-    var gameTimerCount:Int = 300
+    var gameTimerCount:Int = 180
     var gameTimerLabel = String()
     var timer : Timer!
     var timeString = ""
+    var seconds = 0
+    var minutes = 0
     
     private var lastUpdateTime : TimeInterval = 0
     private var spinnyNode : SKShapeNode?
@@ -27,13 +29,15 @@ class GameScene: SKScene {
     private var clutterNode : SKSpriteNode?
     private var contrabandNodes = [SKSpriteNode]()
     private var clutterNodes = [SKSpriteNode]()
+    private var bagNodes = [SKSpriteNode]()
     private var randomLoop = Int.random(in: 1..<10)
     private var yesButtonPressed = false
     private var noButtonPressed = false
-    private var contrabandChance = 2
+    private var contrabandChance = 4
     private var contrabandPresent = false
     private var scoreLabel : SKLabelNode?
-    
+    private var timerLabel : SKLabelNode?
+
     let score = "Score"
     let bestScore = "BestScore"
     
@@ -43,10 +47,14 @@ class GameScene: SKScene {
         
         // Get label node from scene and store it for use later
         self.scoreLabel = self.childNode(withName: "//scoreLabel") as? SKLabelNode
-        if let scoreLabel = self.scoreLabel {
-            scoreLabel.alpha = 0.0
-            //label.run(SKAction.fadeIn(withDuration: 2.0))
-        }
+//        if let scoreLabel = self.scoreLabel {
+//            scoreLabel.alpha = 0.0
+//            label.run(SKAction.fadeIn(withDuration: 2.0))
+//        }
+        self.timerLabel = self.childNode(withName: "//timerLabel") as? SKLabelNode
+//        if let timerLabel = self.timerLabel {
+//                timerLabel.alpha = 0.0
+//        }
         
         // Create shape node to use during mouse interaction
 //        let w = (self.size.width + self.size.height) * 0.05
@@ -62,6 +70,18 @@ class GameScene: SKScene {
 //        }
         
         // get bag and child nodes from scene
+        
+//        self.bagNode = self.childNode as? SKSpriteNode
+//        for parent in self.bagNode.parent {
+//            if let parentNode = parent as? SKSpriteNode {
+//                if (parentNode.name!.hasPrefix("bagNode")) {
+//                    bagNodes.append(parentNode)
+//                } else {
+//
+//                }
+//            }
+//        }
+        
         self.bagNode = self.childNode(withName: "bagNode") as? SKSpriteNode
         for child in self.bagNode!.children {
             if let childNode = child as? SKSpriteNode {
@@ -122,12 +142,12 @@ class GameScene: SKScene {
                 presentPauseScene()
              }
              if touchedNode.name == "yesButton" {
-                    bagVerify()
-                    yesButtonPressed = true
+                yesButtonPressed = true
+                bagVerify()
              }
              if touchedNode.name == "noButton" {
-                    bagVerify()
-                    noButtonPressed = true
+                noButtonPressed = true
+                bagVerify()
             }
         }
         
@@ -173,12 +193,15 @@ class GameScene: SKScene {
     @objc func gameTimerCounter() -> Void {
         gameTimerCount = gameTimerCount - 1
         let time = secondsToMinutesSeconds(seconds: gameTimerCount)
-        let timeString = makeTimeString(minutes: time.0, seconds: time.1)
-        TimerLabel.text = timeString
+//        timeString = (minutes: time.0, seconds: time.1)
+        let timeLableString = "0\(time.0):\(time.1)"
+        timerLabel!.text = timeLableString
     }
     
     func secondsToMinutesSeconds(seconds: Int) -> (Int, Int){
-        return ((seconds % 3600) / 60);,((seconds % 3600) % 60))
+        self.seconds = (seconds % 3600) % 60
+        minutes = (seconds % 3600) / 60
+        return (minutes, seconds)
     }
     
     func makeTimeString(minutes: Int, seconds: Int) -> String{
@@ -186,6 +209,13 @@ class GameScene: SKScene {
         timeString += ":"
         timeString += String(format: "0%2d", seconds)
         return timeString
+    }
+    
+    func showBag() {
+        for node in self.bagNodes {
+            node.isHidden = true
+        }
+        self.bagNodes.randomElement()?.isHidden = false
     }
     
     func createBag() {
@@ -203,21 +233,10 @@ class GameScene: SKScene {
             node.isHidden = false
         }
         self.clutterNodes.randomElement()?.isHidden = true
-        
-//        if levelDay != 1 {
-//            for _ in 0...Int.random(in: 1..<4){
-//                if let clutter = self.clutterNode {
-//                    let textureNames = ["clutter1", "clutter2", "clutter3", "clutter4"]
-//                    let randomName = textureNames.randomElement()!
-//
-//                    clutter.texture = SKTexture(imageNamed: randomName)
-//                }
-//            }
-//        }
     }
     
     func showContraband() {
-        contrabandChance = Int.random(in:1..<3)
+        contrabandChance = Int.random(in:1..<5)
         if contrabandChance == 1 {
             for node in self.contrabandNodes {
                 node.isHidden = true
@@ -227,28 +246,33 @@ class GameScene: SKScene {
         self.contrabandNodes.randomElement()?.isHidden = false
     }
     
-    
-    func createBagOld() {
-        if let bag = self.bagNode {
-            let randomBagSelect = Int.random(in: 0..<4)
-
-            if randomBagSelect == 0 {
-                bag.texture = SKTexture(imageNamed: "bag1")
-            }
-
-            if randomBagSelect == 1 {
-                bag.texture = SKTexture(imageNamed: "bag2")
-            }
-
-            if randomBagSelect == 2 {
-                bag.texture = SKTexture(imageNamed: "bag3")
-            }
-
-            if randomBagSelect == 3 {
-                bag.texture = SKTexture(imageNamed: "bag4")
-            }
-        }
+    func createNewBag() {
+        createBag()
+        showClutter()
+        showContraband()
     }
+    
+//    func createBagOld() {
+//        if let bag = self.bagNode {
+//            let randomBagSelect = Int.random(in: 0..<4)
+//
+//            if randomBagSelect == 0 {
+//                bag.texture = SKTexture(imageNamed: "bag1")
+//            }
+//
+//            if randomBagSelect == 1 {
+//                bag.texture = SKTexture(imageNamed: "bag2")
+//            }
+//
+//            if randomBagSelect == 2 {
+//                bag.texture = SKTexture(imageNamed: "bag3")
+//            }
+//
+//            if randomBagSelect == 3 {
+//                bag.texture = SKTexture(imageNamed: "bag4")
+//            }
+//        }
+//    }
     
     func bagVerify() {
         if yesButtonPressed == true {
@@ -256,16 +280,25 @@ class GameScene: SKScene {
                 currentScore+=1
                 scoreLabel?.text = String(currentScore)
             }
+            if contrabandPresent == false {
+                currentScore-=2
+                scoreLabel?.text = String(currentScore)
+                }
+            }
             yesButtonPressed = false
-            contrabandPresent = false
-        }
         if noButtonPressed == true {
             if contrabandPresent == false {
                 currentScore+=1
                 scoreLabel?.text = String(currentScore)
             }
-           noButtonPressed = false
+            if contrabandPresent == true {
+                currentScore-=2
+                scoreLabel?.text = String(currentScore)
+            }
+            noButtonPressed = false
         }
+        contrabandPresent = false
+        createNewBag()
     }
     
     func setScore(_ value: Int) {
