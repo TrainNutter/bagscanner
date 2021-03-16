@@ -15,12 +15,10 @@ class GameScene: SKScene {
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     var currentScore = 0
-    var gameTimerCount:Int = 180
+    var gameTimerCount:Int = 90
     var gameTimerLabel = String()
     var timer : Timer!
     var timeString = ""
-    var seconds = 0
-    var minutes = 0
     
     private var lastUpdateTime : TimeInterval = 0
     private var spinnyNode : SKShapeNode?
@@ -101,8 +99,9 @@ class GameScene: SKScene {
         self.showContraband()
         self.showClutter()
         
-        //timer
-        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(gameTimerCounter), userInfo: nil, repeats: false)
+        // timer - call now to set to 3:00
+        timerLabel!.text = "01:30"
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(gameTimerCounter), userInfo: nil, repeats: true)
         
     }
 
@@ -192,18 +191,17 @@ class GameScene: SKScene {
     
     @objc func gameTimerCounter() -> Void {
         gameTimerCount = gameTimerCount - 1
-        let time = secondsToMinutesSeconds(seconds: gameTimerCount)
-//        timeString = (minutes: time.0, seconds: time.1)
-        let timeLableString = "0\(time.0):\(time.1)"
-        timerLabel!.text = timeLableString
+        if (gameTimerCount < 0) {
+            // todo: game over!
+            return
+        }
+        let seconds = gameTimerCount % 60
+        let minutes = gameTimerCount / 60
+        
+        let secondsStr = String(format: "%02d", seconds)
+        timerLabel!.text = "0\(minutes):\(secondsStr)"
     }
-    
-    func secondsToMinutesSeconds(seconds: Int) -> (Int, Int){
-        self.seconds = (seconds % 3600) % 60
-        minutes = (seconds % 3600) / 60
-        return (minutes, seconds)
-    }
-    
+
     func makeTimeString(minutes: Int, seconds: Int) -> String{
         timeString += String(format: "0%2d&", minutes)
         timeString += ":"
@@ -236,14 +234,16 @@ class GameScene: SKScene {
     }
     
     func showContraband() {
-        contrabandChance = Int.random(in:1..<5)
+        for node in self.contrabandNodes {
+            node.isHidden = true
+        }
+        contrabandChance = Int.random(in:1..<3)
         if contrabandChance == 1 {
-            for node in self.contrabandNodes {
-                node.isHidden = true
-                contrabandPresent = true
-                }
-            }
-        self.contrabandNodes.randomElement()?.isHidden = false
+            contrabandPresent = true
+            self.contrabandNodes.randomElement()?.isHidden = false
+        } else {
+            contrabandPresent = false
+        }
     }
     
     func createNewBag() {
