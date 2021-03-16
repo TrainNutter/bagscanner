@@ -82,7 +82,7 @@ class GameScene: SKScene {
 //            }
 //        }
         
-        self.bagNode = self.childNode(withName: "bagNode") as? SKSpriteNode
+        self.bagNode = self.childNode(withName: "bagNode1") as? SKSpriteNode
         for child in self.bagNode!.children {
             if let childNode = child as? SKSpriteNode {
                 if (childNode.name!.hasPrefix("clutter")) {
