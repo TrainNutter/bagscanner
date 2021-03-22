@@ -35,6 +35,7 @@ class GameScene: SKScene {
     private var contrabandPresent = false
     private var scoreLabel : SKLabelNode?
     private var timerLabel : SKLabelNode?
+    private var bestScoreLabel : SKLabelNode?
 
     let score = "Score"
     let bestScore = "BestScore"
@@ -45,27 +46,7 @@ class GameScene: SKScene {
         
         // Get label node from scene and store it for use later
         self.scoreLabel = self.childNode(withName: "//scoreLabel") as? SKLabelNode
-//        if let scoreLabel = self.scoreLabel {
-//            scoreLabel.alpha = 0.0
-//            label.run(SKAction.fadeIn(withDuration: 2.0))
-//        }
         self.timerLabel = self.childNode(withName: "//timerLabel") as? SKLabelNode
-//        if let timerLabel = self.timerLabel {
-//                timerLabel.alpha = 0.0
-//        }
-        
-        // Create shape node to use during mouse interaction
-//        let w = (self.size.width + self.size.height) * 0.05
-//        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-//
-//        if let spinnyNode = self.spinnyNode {
-//            spinnyNode.lineWidth = 2.5
-//
-//            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-//            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-//                                              SKAction.fadeOut(withDuration: 0.5),
-//                                              SKAction.removeFromParent()]))
-//        }
         
         // get bag and child nodes from scene
         
@@ -103,37 +84,19 @@ class GameScene: SKScene {
         timerLabel!.text = "01:30"
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(gameTimerCounter), userInfo: nil, repeats: true)
         
+//        bestScoreLabel!.text = "\(bestScore)"
     }
 
     func touchDown(atPoint pos : CGPoint) {
-//        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-//            n.position = pos
-//            n.strokeColor = SKColor.green
-//            self.addChild(n)
-//        }
     }
     
     func touchMoved(toPoint pos : CGPoint) {
-//        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-//            n.position = pos
-//            n.strokeColor = SKColor.blue
-//            self.addChild(n)
-//        }
     }
     
     func touchUp(atPoint pos : CGPoint) {
-//        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-//            n.position = pos
-//            n.strokeColor = SKColor.red
-//            self.addChild(n)
-//        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        if let label = self.label {
-//            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-//        }
-        
         for touch in touches {
              let location = touch.location(in: self)
              let touchedNode = atPoint(location)
@@ -189,10 +152,35 @@ class GameScene: SKScene {
         }
     }
     
+    func presentSuccessScene() {
+        if let scene = GKScene(fileNamed: "SuccessScene") {
+            
+            // Get the SKScene from the loaded GKScene
+            if let successScene = scene.rootNode as! SuccessScene? {
+                successScene.viewController = viewController
+                
+                // Set the scale mode to scale to fit the window
+                successScene.scaleMode = .aspectFill
+                
+                // Present the scene
+                //as! SKView also works
+                if let view = self.view {
+                    view.presentScene(successScene)
+                    
+                    view.ignoresSiblingOrder = true
+                    
+                    view.showsFPS = true
+                    view.showsNodeCount = true
+                }
+            }
+        }
+    }
+    
     @objc func gameTimerCounter() -> Void {
         gameTimerCount = gameTimerCount - 1
         if (gameTimerCount < 0) {
             // todo: game over!
+            presentSuccessScene()
             return
         }
         let seconds = gameTimerCount % 60
@@ -252,27 +240,27 @@ class GameScene: SKScene {
         showContraband()
     }
     
-//    func createBagOld() {
-//        if let bag = self.bagNode {
-//            let randomBagSelect = Int.random(in: 0..<4)
-//
-//            if randomBagSelect == 0 {
-//                bag.texture = SKTexture(imageNamed: "bag1")
-//            }
-//
-//            if randomBagSelect == 1 {
-//                bag.texture = SKTexture(imageNamed: "bag2")
-//            }
-//
-//            if randomBagSelect == 2 {
-//                bag.texture = SKTexture(imageNamed: "bag3")
-//            }
-//
-//            if randomBagSelect == 3 {
-//                bag.texture = SKTexture(imageNamed: "bag4")
-//            }
-//        }
-//    }
+    func createBagOld() {
+        if let bag = self.bagNode {
+            let randomBagSelect = Int.random(in: 0..<4)
+
+            if randomBagSelect == 0 {
+                bag.texture = SKTexture(imageNamed: "bag1")
+            }
+
+            if randomBagSelect == 1 {
+                bag.texture = SKTexture(imageNamed: "bag2")
+            }
+
+            if randomBagSelect == 2 {
+                bag.texture = SKTexture(imageNamed: "bag3")
+            }
+
+            if randomBagSelect == 3 {
+                bag.texture = SKTexture(imageNamed: "bag4")
+            }
+        }
+    }
     
     func bagVerify() {
         if yesButtonPressed == true {
@@ -318,12 +306,13 @@ class GameScene: SKScene {
     func setBestScore(_ value: Int) {
         UserDefaults.standard.set(value, forKey: bestScore)
         UserDefaults.standard.synchronize()
+//        writeData()
     }
     
     func getBestScore() -> Int {
         return UserDefaults.standard.integer(forKey: bestScore)
     }
-
+    
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         // Initialize _lastUpdateTime if it has not already been
@@ -341,4 +330,30 @@ class GameScene: SKScene {
         
         self.lastUpdateTime = currentTime
     }
+    
+//    func writeData() {
+//        let file = "gamesave.rtf" //this is the file. we will write to and read from it
+//
+//        let text = getBestScore //just a text
+//        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+//
+//            let fileURL = dir.appendingPathComponent(file)
+//
+//            //writing
+//            do {
+//                try text.write(to: fileURL, atomically: false, encoding: UTF8)
+//            }
+//            catch {/* error handling here */}
+//        }
+//    }
+//    func retriveData() {
+//        let file = "gamesave.rtf"
+//        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+//            let fileURL = dir.appendingPathComponent(file)
+//            do {
+//                _ = try String(contentsOf: fileURL, encoding: utf8)
+//            }
+//            catch {/* error handling here */}
+//        }
+//    }
 }

@@ -21,6 +21,8 @@
 		16DFAFCD2578F5660054EFDD /* PauseScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16DFAFCC2578F5660054EFDD /* PauseScene.swift */; };
 		16DFAFD22578F6650054EFDD /* PauseScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 16DFAFD12578F6650054EFDD /* PauseScene.sks */; };
 		16DFAFDC2578FC340054EFDD /* gameSave.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 16DFAFDB2578FC340054EFDD /* gameSave.rtf */; };
+		16EEC7752602354700F92036 /* SuccessScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 16EEC7742602354700F92036 /* SuccessScene.sks */; };
+		16EEC77A2602365D00F92036 /* SuccessScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EEC7792602365D00F92036 /* SuccessScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +63,8 @@
 		16DFAFCC2578F5660054EFDD /* PauseScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseScene.swift; sourceTree = "<group>"; };
 		16DFAFD12578F6650054EFDD /* PauseScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = PauseScene.sks; sourceTree = "<group>"; };
 		16DFAFDB2578FC340054EFDD /* gameSave.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = gameSave.rtf; sourceTree = "<group>"; };
+		16EEC7742602354700F92036 /* SuccessScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = SuccessScene.sks; sourceTree = "<group>"; };
+		16EEC7792602365D00F92036 /* SuccessScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,9 +118,11 @@
 				16DE2BB225758F300053A366 /* AppDelegate.swift */,
 				16DE2BB625758F300053A366 /* Actions.sks */,
 				16DFAFD12578F6650054EFDD /* PauseScene.sks */,
+				16EEC7742602354700F92036 /* SuccessScene.sks */,
 				16DE2BB425758F300053A366 /* GameScene.sks */,
 				16DE2BEB2575969F0053A366 /* MenuScene.sks */,
 				16DFAFCC2578F5660054EFDD /* PauseScene.swift */,
+				16EEC7792602365D00F92036 /* SuccessScene.swift */,
 				16DE2BB825758F300053A366 /* GameScene.swift */,
 				16DE2BF02575971F0053A366 /* MenuScene.swift */,
 				16DE2BBA25758F300053A366 /* GameViewController.swift */,
@@ -255,6 +261,7 @@
 				16DFAFDC2578FC340054EFDD /* gameSave.rtf in Resources */,
 				16DE2BC025758F320053A366 /* Assets.xcassets in Resources */,
 				16DFAFD22578F6650054EFDD /* PauseScene.sks in Resources */,
+				16EEC7752602354700F92036 /* SuccessScene.sks in Resources */,
 				16DE2BB725758F300053A366 /* Actions.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -280,6 +287,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16EEC77A2602365D00F92036 /* SuccessScene.swift in Sources */,
 				16DE2BB925758F300053A366 /* GameScene.swift in Sources */,
 				16DE2BF12575971F0053A366 /* MenuScene.swift in Sources */,
 				16DFAFCD2578F5660054EFDD /* PauseScene.swift in Sources */,
