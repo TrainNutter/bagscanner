@@ -152,35 +152,35 @@ class GameScene: SKScene {
         }
     }
     
-    func presentSuccessScene() {
-        if let scene = GKScene(fileNamed: "SuccessScene") {
-            
-            // Get the SKScene from the loaded GKScene
-            if let successScene = scene.rootNode as! SuccessScene? {
-                successScene.viewController = viewController
-                
-                // Set the scale mode to scale to fit the window
-                successScene.scaleMode = .aspectFill
-                
-                // Present the scene
-                //as! SKView also works
-                if let view = self.view {
-                    view.presentScene(successScene)
-                    
-                    view.ignoresSiblingOrder = true
-                    
-                    view.showsFPS = true
-                    view.showsNodeCount = true
-                }
-            }
-        }
-    }
-    
+//    func presentSuccessScene() {
+//        if let scene = GKScene(fileNamed: "SuccessScene") {
+//
+//            // Get the SKScene from the loaded GKScene
+//            if let successScene = scene.rootNode as! SuccessScene? {
+//                successScene.viewController = viewController
+//
+//                // Set the scale mode to scale to fit the window
+//                successScene.scaleMode = .aspectFill
+//
+//                // Present the scene
+//                //as! SKView also works
+//                if let view = self.view {
+//                    view.presentScene(successScene)
+//
+//                    view.ignoresSiblingOrder = true
+//
+//                    view.showsFPS = true
+//                    view.showsNodeCount = true
+//                }
+//            }
+//        }
+//    }
+//
     @objc func gameTimerCounter() -> Void {
         gameTimerCount = gameTimerCount - 1
         if (gameTimerCount < 0) {
             // todo: game over!
-            presentSuccessScene()
+//            presentSuccessScene()
             return
         }
         let seconds = gameTimerCount % 60
