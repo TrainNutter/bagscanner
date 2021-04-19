@@ -36,6 +36,11 @@ class GameScene: SKScene {
     private var scoreLabel : SKLabelNode?
     private var timerLabel : SKLabelNode?
     private var bestScoreLabel : SKLabelNode?
+    private var tvNode : SKSpriteNode?
+    private var yesButtonNode : SKSpriteNode?
+    private var noButtonNode : SKSpriteNode?
+    private var timeRemainLabel : SKLabelNode!
+    private var playAgainButton : SKSpriteNode?
 
     let score = "Score"
     let bestScore = "BestScore"
@@ -47,6 +52,10 @@ class GameScene: SKScene {
         // Get label node from scene and store it for use later
         self.scoreLabel = self.childNode(withName: "//scoreLabel") as? SKLabelNode
         self.timerLabel = self.childNode(withName: "//timerLabel") as? SKLabelNode
+        self.tvNode = self.childNode(withName: "//TV") as? SKSpriteNode
+        self.yesButtonNode = self.childNode(withName: "//yesButton") as? SKSpriteNode
+        self.noButtonNode = self.childNode(withName: "//noButton") as? SKSpriteNode
+        self.timeRemainLabel = self.childNode(withName: "//timeRemainingText") as? SKLabelNode
         
         // get bag and child nodes from scene
         
@@ -81,7 +90,7 @@ class GameScene: SKScene {
         self.showClutter()
         
         // timer - call now to set to 3:00
-        timerLabel!.text = "01:30"
+        timerLabel?.text = "01:30"
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(gameTimerCounter), userInfo: nil, repeats: true)
         
 //        bestScoreLabel!.text = "\(bestScore)"
@@ -152,35 +161,31 @@ class GameScene: SKScene {
         }
     }
     
-//    func presentSuccessScene() {
-//        if let scene = GKScene(fileNamed: "SuccessScene") {
-//
-//            // Get the SKScene from the loaded GKScene
-//            if let successScene = scene.rootNode as! SuccessScene? {
-//                successScene.viewController = viewController
-//
-//                // Set the scale mode to scale to fit the window
-//                successScene.scaleMode = .aspectFill
-//
-//                // Present the scene
-//                //as! SKView also works
-//                if let view = self.view {
-//                    view.presentScene(successScene)
-//
-//                    view.ignoresSiblingOrder = true
-//
-//                    view.showsFPS = true
-//                    view.showsNodeCount = true
-//                }
-//            }
-//        }
-//    }
-//
+    func hideScuccessScene() {
+        bagNode?.isHidden = false
+        tvNode?.isHidden = false
+        yesButtonNode?.isHidden = false
+        noButtonNode?.isHidden = false
+        timeRemainLabel.isHidden = false
+        timerLabel?.isHidden = false
+        playAgainButton?.isHidden = true
+    }
+    
+    func presentSuccessScene() {
+        bagNode?.isHidden = true
+        tvNode?.isHidden = false
+        yesButtonNode?.isHidden = true
+        noButtonNode?.isHidden = true
+        timeRemainLabel.isHidden = true
+        timerLabel?.isHidden = true
+        playAgainButton?.isHidden = false
+    }
+
     @objc func gameTimerCounter() -> Void {
         gameTimerCount = gameTimerCount - 1
         if (gameTimerCount < 0) {
             // todo: game over!
-//            presentSuccessScene()
+            presentSuccessScene()
             return
         }
         let seconds = gameTimerCount % 60
