@@ -15,7 +15,8 @@ class GameScene: SKScene {
     var entities = [GKEntity]()
     var graphs = [String : GKGraph]()
     var currentScore = 0
-    var gameTimerCount:Int = 90
+    var bestScore = 0
+    var gameTimerCount:Int = 10
     var gameTimerLabel = String()
     var timer : Timer!
     var timeString = ""
@@ -41,10 +42,9 @@ class GameScene: SKScene {
     private var noButtonNode : SKSpriteNode?
     private var timeRemainLabel : SKLabelNode!
     private var playAgainButton : SKSpriteNode?
+    private var exitMenuButton : SKSpriteNode?
+    private var pauseButton : SKSpriteNode?
 
-    let score = "Score"
-    let bestScore = "BestScore"
-    
     override func sceneDidLoad() {
 
         self.lastUpdateTime = 0
@@ -52,11 +52,16 @@ class GameScene: SKScene {
         // Get label node from scene and store it for use later
         self.scoreLabel = self.childNode(withName: "//scoreLabel") as? SKLabelNode
         self.timerLabel = self.childNode(withName: "//timerLabel") as? SKLabelNode
+        self.bestScoreLabel = self.childNode(withName: "//bestScoreLabel") as? SKLabelNode
+        
         self.tvNode = self.childNode(withName: "//TV") as? SKSpriteNode
         self.yesButtonNode = self.childNode(withName: "//yesButton") as? SKSpriteNode
         self.noButtonNode = self.childNode(withName: "//noButton") as? SKSpriteNode
         self.timeRemainLabel = self.childNode(withName: "//timeRemainingText") as? SKLabelNode
-        
+        self.playAgainButton = self.childNode(withName: "//playAgainButton") as? SKSpriteNode
+        self.exitMenuButton = self.childNode(withName: "//exitMenuButton") as? SKSpriteNode
+        self.pauseButton = self.childNode(withName: "//pauseButton") as? SKSpriteNode
+
         // get bag and child nodes from scene
         
 //        self.bagNode = self.childNode as? SKSpriteNode
@@ -80,20 +85,18 @@ class GameScene: SKScene {
                 }
             }
         }
-        
-        /* Reset Score label */
-        scoreLabel?.text = "\(currentScore)"
-        
+
+        self.bestScore = self.getBestScore()
+        self.updateScoreLabels()
+
         // setup bag and contents
         self.createBag()
         self.showContraband()
         self.showClutter()
-        
-        // timer - call now to set to 3:00
-        timerLabel?.text = "01:30"
+        self.hideScuccessScene()
+
+        // timer
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(gameTimerCounter), userInfo: nil, repeats: true)
-        
-//        bestScoreLabel!.text = "\(bestScore)"
     }
 
     func touchDown(atPoint pos : CGPoint) {
@@ -109,7 +112,7 @@ class GameScene: SKScene {
         for touch in touches {
              let location = touch.location(in: self)
              let touchedNode = atPoint(location)
-             if touchedNode.name == "pause_Button" {
+             if touchedNode.name == "pauseButton" {
                 presentPauseScene()
              }
              if touchedNode.name == "yesButton" {
@@ -119,6 +122,9 @@ class GameScene: SKScene {
              if touchedNode.name == "noButton" {
                 noButtonPressed = true
                 bagVerify()
+            }
+            if touchedNode.name == "playAgainButton" {
+                self.representGameScene()
             }
         }
         
@@ -143,7 +149,9 @@ class GameScene: SKScene {
             // Get the SKScene from the loaded GKScene
             if let pauseScene = scene.rootNode as! PauseScene? {
                 pauseScene.viewController = viewController
-                
+                pauseScene.currentScore = self.currentScore
+                pauseScene.gameTimerCount = self.gameTimerCount
+
                 // Set the scale mode to scale to fit the window
                 pauseScene.scaleMode = .aspectFill
                 
@@ -160,6 +168,30 @@ class GameScene: SKScene {
             }
         }
     }
+
+    func representGameScene() {
+        if let scene = GKScene(fileNamed: "GameScene") {
+
+            // Get the SKScene from the loaded GKScene
+            if let gameScene = scene.rootNode as! GameScene? {
+                gameScene.viewController = viewController
+
+                // Set the scale mode to scale to fit the window
+                gameScene.scaleMode = .aspectFill
+
+                // Present the scene
+                //as! SKView also works
+                if let view = self.view {
+                    view.presentScene(gameScene)
+
+                    view.ignoresSiblingOrder = true
+
+                    view.showsFPS = true
+                    view.showsNodeCount = true
+                }
+            }
+        }
+    }
     
     func hideScuccessScene() {
         bagNode?.isHidden = false
@@ -169,16 +201,20 @@ class GameScene: SKScene {
         timeRemainLabel.isHidden = false
         timerLabel?.isHidden = false
         playAgainButton?.isHidden = true
+        exitMenuButton?.isHidden = true
+        pauseButton?.isHidden = false
     }
     
     func presentSuccessScene() {
         bagNode?.isHidden = true
-        tvNode?.isHidden = false
+        tvNode?.isHidden = true
         yesButtonNode?.isHidden = true
         noButtonNode?.isHidden = true
         timeRemainLabel.isHidden = true
         timerLabel?.isHidden = true
         playAgainButton?.isHidden = false
+        exitMenuButton?.isHidden = false
+        pauseButton?.isHidden = true
     }
 
     @objc func gameTimerCounter() -> Void {
@@ -186,22 +222,25 @@ class GameScene: SKScene {
         if (gameTimerCount < 0) {
             // todo: game over!
             presentSuccessScene()
+            updateBestScore(self.currentScore)
             return
         }
+        self.updateTimerLabel()
+    }
+
+    func updateTimerLabel() {
         let seconds = gameTimerCount % 60
         let minutes = gameTimerCount / 60
-        
+
         let secondsStr = String(format: "%02d", seconds)
         timerLabel!.text = "0\(minutes):\(secondsStr)"
     }
 
-    func makeTimeString(minutes: Int, seconds: Int) -> String{
-        timeString += String(format: "0%2d&", minutes)
-        timeString += ":"
-        timeString += String(format: "0%2d", seconds)
-        return timeString
+    func updateScoreLabels() {
+        scoreLabel?.text = "\(currentScore)"
+        bestScoreLabel?.text = "\(bestScore)"
     }
-    
+
     func showBag() {
         for node in self.bagNodes {
             node.isHidden = true
@@ -294,28 +333,15 @@ class GameScene: SKScene {
         createNewBag()
     }
     
-    func setScore(_ value: Int) {
-        
+    func updateBestScore(_ value: Int) {
         if value > getBestScore() {
-            setBestScore(value)
+            UserDefaults.standard.set(value, forKey: "BestScore")
+            UserDefaults.standard.synchronize()
         }
-        
-        UserDefaults.standard.set(value, forKey: score)
-        UserDefaults.standard.synchronize()
     }
-    
-    func getScore() -> Int {
-        return UserDefaults.standard.integer(forKey: score)
-    }
-    
-    func setBestScore(_ value: Int) {
-        UserDefaults.standard.set(value, forKey: bestScore)
-        UserDefaults.standard.synchronize()
-//        writeData()
-    }
-    
+
     func getBestScore() -> Int {
-        return UserDefaults.standard.integer(forKey: bestScore)
+        return UserDefaults.standard.integer(forKey: "BestScore")
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -323,6 +349,8 @@ class GameScene: SKScene {
         // Initialize _lastUpdateTime if it has not already been
         if (self.lastUpdateTime == 0) {
             self.lastUpdateTime = currentTime
+            self.updateTimerLabel()
+            self.updateScoreLabels()
         }
         
         // Calculate time since last update

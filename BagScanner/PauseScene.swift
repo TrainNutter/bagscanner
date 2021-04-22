@@ -10,6 +10,8 @@ import GameplayKit
 class PauseScene: SKScene {
 
     var viewController: UIViewController?
+    var currentScore: Int = 0
+    var gameTimerCount: Int = 0
 
     override func sceneDidLoad() {
 
@@ -31,6 +33,8 @@ class PauseScene: SKScene {
             // Get the SKScene from the loaded GKScene
             if let sceneNode = scene.rootNode as! GameScene? {
                 sceneNode.viewController = viewController
+                sceneNode.currentScore = self.currentScore
+                sceneNode.gameTimerCount = self.gameTimerCount
 
                 // Copy gameplay related content over to the scene
                 sceneNode.entities = scene.entities
