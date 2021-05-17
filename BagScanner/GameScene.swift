@@ -16,7 +16,7 @@ class GameScene: SKScene {
     var graphs = [String : GKGraph]()
     var currentScore = 0
     var bestScore = 0
-    var gameTimerCount:Int = 10
+    var gameTimerCount:Int = 90
     var gameTimerLabel = String()
     var timer : Timer!
     var timeString = ""
@@ -115,11 +115,11 @@ class GameScene: SKScene {
              if touchedNode.name == "pauseButton" {
                 presentPauseScene()
              }
-             if touchedNode.name == "yesButton" {
+             if touchedNode.name == "noButton" {
                 yesButtonPressed = true
                 bagVerify()
              }
-             if touchedNode.name == "noButton" {
+             if touchedNode.name == "yesButton" {
                 noButtonPressed = true
                 bagVerify()
             }
